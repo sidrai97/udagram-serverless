@@ -43,7 +43,7 @@ export async function createTodo(userId: string, createTodoRequest: CreateTodoRe
 export async function updateTodo(userId: string, todoId: string, updateTodoRequest: UpdateTodoRequest) {
   logger.info(`Updating todo ${todoId} for user ${userId}`, { userId, todoId, todoUpdate: updateTodoRequest })
 
-  const item = await todoDB.getTodoItem(todoId)
+  const item = await todoDB.getTodoItem(userId, todoId)
 
   if (!item)
     throw new Error('Item not found')
@@ -53,13 +53,13 @@ export async function updateTodo(userId: string, todoId: string, updateTodoReque
     throw new Error('User is not authorized to update item')
   }
 
-  todoDB.updateTodoItem(todoId, updateTodoRequest as TodoUpdate)
+  todoDB.updateTodoItem(userId, todoId, updateTodoRequest as TodoUpdate)
 }
 
 export async function deleteTodo(userId: string, todoId: string) {
   logger.info(`Deleting todo ${todoId} for user ${userId}`, { userId, todoId })
 
-  const item = await todoDB.getTodoItem(todoId)
+  const item = await todoDB.getTodoItem(userId, todoId)
 
   if (!item)
     throw new Error('Item not found')
@@ -69,7 +69,7 @@ export async function deleteTodo(userId: string, todoId: string) {
     throw new Error('User is not authorized to delete item')
   }
 
-  todoDB.deleteTodoItem(todoId)
+  todoDB.deleteTodoItem(userId, todoId)
 }
 
 export async function updateAttachmentUrl(userId: string, todoId: string, attachmentId: string) {
@@ -79,7 +79,7 @@ export async function updateAttachmentUrl(userId: string, todoId: string, attach
 
   logger.info(`Updating todo ${todoId} with attachment URL ${attachmentUrl}`, { userId, todoId })
 
-  const item = await todoDB.getTodoItem(todoId)
+  const item = await todoDB.getTodoItem(userId, todoId)
 
   if (!item)
     throw new Error('Item not found')
@@ -89,7 +89,7 @@ export async function updateAttachmentUrl(userId: string, todoId: string, attach
     throw new Error('User is not authorized to update item')
   }
 
-  await todoDB.updateAttachmentUrl(todoId, attachmentUrl)
+  await todoDB.updateAttachmentUrl(userId, todoId, attachmentUrl)
 }
 
 export async function generateUploadUrl(attachmentId: string): Promise<string> {
