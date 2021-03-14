@@ -67,6 +67,9 @@ functions:
           path: todos
           cors: true
           authorizer: Auth
+          request:
+            schema:
+              application/json: ${file(models/CreateTodoRequest.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -95,6 +98,9 @@ functions:
           path: todos/{todoId}
           cors: true
           authorizer: Auth
+          request:
+            schema:
+              application/json: ${file(models/UpdateTodoRequest.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -206,6 +212,8 @@ resources:
         KeySchema:
           - AttributeName: todoId
             KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.TODOS_TABLE}
         GlobalSecondaryIndexes:
